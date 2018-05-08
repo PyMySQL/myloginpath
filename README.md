@@ -13,10 +13,14 @@ $ pip install myloginpath
 
 ## Example
 
+Create login path file with `mysql_config_editor` command:
+
 ```console
 $ mysql_config_editor set --login-path=client --host=localhost --user=localuser --password
 Enter password: <Type password here>
 ```
+
+Use it from Python:
 
 ```python
 import myloginpath, MySQLdb
