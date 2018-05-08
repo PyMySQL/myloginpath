@@ -4,104 +4,95 @@
 from io import BytesIO, TextIOWrapper
 import os
 import struct
+import sys
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
 
 # Buffer at the beginning of the login path file.
-UNUSED_BUFFER_LENGTH = 4
+_UNUSED_BUFFER_LENGTH = 4
 
 # The key stored in the file.
-LOGIN_KEY_LENGTH = 20
-
-# The entire login key header.
-LOGIN_KEY_HEADER_LENGTH = UNUSED_BUFFER_LENGTH + LOGIN_KEY_LENGTH
+_LOGIN_KEY_LENGTH = 20
 
 # Number of bytes used to store the length of ciphertext.
-CIPHER_STORE_LENGTH = 4
+_CIPHER_STORE_LENGTH = 4
 
 
-def open_login_path_file():
-    """Open a decrypted version of the login path file."""
-    path = get_login_path_file()
-    try:
-        with open(path, "rb") as fp:
-            key = read_key(fp)
-            cipher = get_aes_cipher(key)
-            plaintext = decrypt_file(fp, cipher.decryptor())
-    except (OSError, IOError):
-        return None
-
-    if not isinstance(plaintext, BytesIO):
-        return None
-
-    return TextIOWrapper(plaintext)
+def read(path=None) -> str:
+    """Read contents of the login path file."""
+    if path is None:
+        path = _get_login_path_file()
+    with open(path, "rb") as fp:
+        return _read_encrypted_file(fp).decode()
 
 
-def get_login_path_file():
+def _get_login_path_file():
     """Return the login path file's path or None if it doesn't exist."""
-    app_data = os.getenv("APPDATA")
-    default_dir = os.path.join(app_data, "MySQL") if app_data else "~"
-    file_path = os.path.join(default_dir, ".mylogin.cnf")
+    file_path = os.getenv("MYSQL_TEST_LOGIN_FILE")
+    if file_path:
+        return file_path
 
-    return os.getenv("MYSQL_TEST_LOGIN_FILE", os.path.expanduser(file_path))
+    if sys.platform == "win32":
+        file_path = os.path.join(getenv("APPDATA"), "MySQL", ".mylogin.cnf")
+    else:
+        file_path = os.path.join("~", ".mylogin.cnf")
+    return os.path.expanduser(file_path)
 
 
-def read_key(fp):
+def _read_key(fp):
     """Read the key from the login path file header."""
     # Move past the unused buffer.
-    _buffer = fp.read(UNUSED_BUFFER_LENGTH)
+    _buffer = fp.read(_UNUSED_BUFFER_LENGTH)
 
-    if not _buffer or len(_buffer) != UNUSED_BUFFER_LENGTH:
+    if not _buffer or len(_buffer) != _UNUSED_BUFFER_LENGTH:
         # Login path file is blank or incomplete.
         return None
 
-    return create_key(fp.read(LOGIN_KEY_LENGTH))
+    return _create_key(fp.read(_LOGIN_KEY_LENGTH))
 
 
-def create_key(key):
+def _create_key(key):
     """Create the AES key from the login path file header."""
-    rkey = [0] * 16
+    rkey = bytearray(16)
     for i in range(len(key)):
-        try:
-            rkey[i % len(rkey)] ^= ord(key[i:i + 1])
-        except TypeError:
-            # ord() was unable to get the value of the byte.
-            return None
-    return struct.pack("16B", *rkey)
+        rkey[i % 16] ^= key[i]
+    return bytes(rkey)
 
 
-def get_aes_cipher(key):
+def _get_aes_cipher(key):
     """Get the AES cipher object."""
     return Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
 
 
-def decrypt_file(f, decryptor):
-    """Decrypt a file *f* using *decryptor*."""
-    plaintext = BytesIO()
+def _read_encrypted_file(f) -> bytes:
+    """Decrypt a file *f*."""
+    key = _read_key(f)
+    cipher = _get_aes_cipher(key)
+    decryptor = cipher.decryptor()
 
-    f.seek(LOGIN_KEY_HEADER_LENGTH)
+    plaintext = b""
+
     while True:
         # Read the length of the line.
-        length_buffer = f.read(CIPHER_STORE_LENGTH)
-        if len(length_buffer) < CIPHER_STORE_LENGTH:
+        length_buffer = f.read(_CIPHER_STORE_LENGTH)
+        if len(length_buffer) < _CIPHER_STORE_LENGTH:
             break
         line_length, = struct.unpack("<i", length_buffer)
-        line = read_line(f, line_length, decryptor)
-        plaintext.write(line)
+        line = _read_line(f, line_length, decryptor)
+        plaintext += line
 
-    plaintext.seek(0)
     return plaintext
 
 
-def read_line(f, length, decryptor):
+def _read_line(f, length, decryptor):
     """Read a line of length *length* from file *f* using *decryptor*."""
     line = f.read(length)
-    return remove_pad(decryptor.update(line))
+    return _remove_pad(decryptor.update(line))
 
 
-def remove_pad(line):
+def _remove_pad(line):
     """Remove the pad from the *line*."""
     try:
         pad_length = ord(line[-1:])
@@ -115,3 +106,7 @@ def remove_pad(line):
         return None
 
     return line[:-pad_length]
+
+
+if __name__ == "__main__":
+    print(read())
