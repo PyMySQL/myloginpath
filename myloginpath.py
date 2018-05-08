@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Funtions that read and decrypt MySQL's login path file."""
 
+from configparser import RawConfigParser
 from io import BytesIO, TextIOWrapper
 import os
 import struct
@@ -26,6 +27,16 @@ def read(path=None) -> str:
         path = _get_login_path_file()
     with open(path, "rb") as fp:
         return _read_encrypted_file(fp).decode()
+
+
+def parse(login_path: str, path=None) -> dict:
+    if path is None:
+        path = _get_login_path_file()
+    parser = RawConfigParser(
+        dict_type=dict, allow_no_value=True, default_section="~~~UNUSED~~~"
+    )
+    parser.read_string(read(path), source=path)
+    return dict(parser.items(login_path))
 
 
 def _get_login_path_file():
@@ -110,3 +121,4 @@ def _remove_pad(line):
 
 if __name__ == "__main__":
     print(read())
+    print(parse("test"))
