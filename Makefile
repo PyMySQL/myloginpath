@@ -1,2 +1,2 @@
 format:
-	black myloginpath.py
+	black myloginpath.py setup.py

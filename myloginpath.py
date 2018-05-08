@@ -36,7 +36,10 @@ def parse(login_path: str, path=None) -> dict:
         dict_type=dict, allow_no_value=True, default_section="~~~UNUSED~~~"
     )
     parser.read_string(read(path), source=path)
-    return dict(parser.items(login_path))
+    data = dict(parser.items(login_path))
+    if 'port' in data:
+        data['port'] = int(data['port'])
+    return data
 
 
 def _get_login_path_file():
