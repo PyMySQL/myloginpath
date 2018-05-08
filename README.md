@@ -5,6 +5,12 @@ Decrypt and parse MySQL's login path file.
 See also: https://dev.mysql.com/doc/refman/8.0/en/mysql-config-editor.html
 
 
+## Install
+
+```
+$ pip install myloginpath
+```
+
 ## Example
 
 ```console
