@@ -1,2 +1,2 @@
 format:
-	pipenv run black myloginpath.py
+	black myloginpath.py
