@@ -9,8 +9,10 @@ try:
     from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
     from cryptography.hazmat.backends import default_backend
 except ImportError:
-    raise ImportError('You must install the package "cryptography" in order '
-                      'to read the login path file.')
+    raise ImportError(
+        'You must install the package "cryptography" in order '
+        "to read the login path file."
+    )
 
 # Buffer at the beginning of the login path file.
 UNUSED_BUFFER_LENGTH = 4
@@ -29,7 +31,7 @@ def open_login_path_file():
     """Open a decrypted version of the login path file."""
     path = get_login_path_file()
     try:
-        with open(path, 'rb') as fp:
+        with open(path, "rb") as fp:
             key = read_key(fp)
             cipher = get_aes_cipher(key)
             plaintext = decrypt_file(fp, cipher.decryptor())
@@ -44,12 +46,11 @@ def open_login_path_file():
 
 def get_login_path_file():
     """Return the login path file's path or None if it doesn't exist."""
-    app_data = os.getenv('APPDATA')
-    default_dir = os.path.join(app_data, 'MySQL') if app_data else '~'
-    file_path = os.path.join(default_dir, '.mylogin.cnf')
+    app_data = os.getenv("APPDATA")
+    default_dir = os.path.join(app_data, "MySQL") if app_data else "~"
+    file_path = os.path.join(default_dir, ".mylogin.cnf")
 
-    return os.getenv('MYSQL_TEST_LOGIN_FILE',
-                     os.path.expanduser(file_path))
+    return os.getenv("MYSQL_TEST_LOGIN_FILE", os.path.expanduser(file_path))
 
 
 def read_key(fp):
@@ -73,13 +74,12 @@ def create_key(key):
         except TypeError:
             # ord() was unable to get the value of the byte.
             return None
-    return struct.pack('16B', *rkey)
+    return struct.pack("16B", *rkey)
 
 
 def get_aes_cipher(key):
     """Get the AES cipher object."""
-    return Cipher(algorithms.AES(key), modes.ECB(),
-                  backend=default_backend())
+    return Cipher(algorithms.AES(key), modes.ECB(), backend=default_backend())
 
 
 def decrypt_file(f, decryptor):
@@ -92,7 +92,7 @@ def decrypt_file(f, decryptor):
         length_buffer = f.read(CIPHER_STORE_LENGTH)
         if len(length_buffer) < CIPHER_STORE_LENGTH:
             break
-        line_length, = struct.unpack('<i', length_buffer)
+        line_length, = struct.unpack("<i", length_buffer)
         line = read_line(f, line_length, decryptor)
         plaintext.write(line)
 
