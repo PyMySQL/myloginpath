@@ -1,0 +1,13 @@
+sudo: false
+language: python
+python:
+  - 3.4
+  - 3.5
+  - 3.6
+  - 3.7-dev
+
+install:
+  - pip install cryptography
+
+script:
+  - MYSQL_TEST_LOGIN_FILE=`pwd`/test.mylogin.cnf python myloginpath.py
