@@ -5,14 +5,9 @@ from io import BytesIO, TextIOWrapper
 import os
 import struct
 
-try:
-    from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-    from cryptography.hazmat.backends import default_backend
-except ImportError:
-    raise ImportError(
-        'You must install the package "cryptography" in order '
-        "to read the login path file."
-    )
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+
 
 # Buffer at the beginning of the login path file.
 UNUSED_BUFFER_LENGTH = 4
