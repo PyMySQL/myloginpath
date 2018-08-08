@@ -50,7 +50,7 @@ def _get_login_path_file():
         return file_path
 
     if sys.platform == "win32":
-        file_path = os.path.join(getenv("APPDATA"), "MySQL", ".mylogin.cnf")
+        file_path = os.path.join(os.getenv("APPDATA"), "MySQL", ".mylogin.cnf")
     else:
         file_path = os.path.join("~", ".mylogin.cnf")
     return os.path.expanduser(file_path)
