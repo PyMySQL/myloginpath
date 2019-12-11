@@ -2,7 +2,6 @@
 """Funtions that read and decrypt MySQL's login path file."""
 
 from configparser import RawConfigParser
-from io import BytesIO, TextIOWrapper
 import os
 import struct
 import sys
