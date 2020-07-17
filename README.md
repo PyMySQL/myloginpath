@@ -28,3 +28,7 @@ conf = myloginpath.parse('client')
 print(conf)  # {'host': 'localhost', 'user': 'localuser', 'password': 'secretstring'}
 conn = MySQLdb.connect(**conf, db="myapp")
 ```
+
+## Comment
+* myloginpath.py: Python3.4+ Support
+* myloginpath2.py: Python2.7 Support
