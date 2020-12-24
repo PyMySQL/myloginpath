@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Funtions that read and decrypt MySQL's login path file."""
 
 from configparser import RawConfigParser
@@ -9,7 +8,7 @@ import sys
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
-VERSION = (0, 0, 1)
+VERSION = (0, 0, 2)
 
 # Buffer at the beginning of the login path file.
 _UNUSED_BUFFER_LENGTH = 4
