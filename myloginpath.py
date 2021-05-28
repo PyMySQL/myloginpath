@@ -36,8 +36,8 @@ def parse(login_path: str, path=None) -> dict:
     )
     parser.read_string(read(path), source=path)
     data = dict(parser.items(login_path))
-    if 'port' in data:
-        data['port'] = int(data['port'])
+    if "port" in data:
+        data["port"] = int(data["port"])
     return data
 
 
@@ -92,7 +92,7 @@ def _read_encrypted_file(f) -> bytes:
         length_buffer = f.read(_CIPHER_STORE_LENGTH)
         if len(length_buffer) < _CIPHER_STORE_LENGTH:
             break
-        line_length, = struct.unpack("<i", length_buffer)
+        (line_length,) = struct.unpack("<i", length_buffer)
         line = _read_line(f, line_length, decryptor)
         plaintext += line
 
