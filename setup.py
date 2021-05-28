@@ -1,7 +1,8 @@
 from setuptools import setup
 import pathlib
 
-readme = pathlib.Path("README.md").read_text("utf-8")
+with open("README.md", "rt") as f:
+    readme = f.read()
 
 setup(
     name="myloginpath",
