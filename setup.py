@@ -1,5 +1,4 @@
 from setuptools import setup
-import pathlib
 
 with open("README.md", "rt") as f:
     readme = f.read()
