@@ -1,7 +1,7 @@
 from setuptools import setup
-import pathlib
 
-readme = pathlib.Path("README.md").read_text("utf-8")
+with open("README.md", "rt") as f:
+    readme = f.read()
 
 setup(
     name="myloginpath",
@@ -13,6 +13,6 @@ setup(
     url="https://github.com/PyMySQL/myloginpath/",
     keywords="MySQL",
     install_requires=["cryptography"],
-    python_requires='>=3.4',
+    python_requires=">=3.4",
     py_modules=["myloginpath"],
 )

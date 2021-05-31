@@ -4,10 +4,15 @@ python:
   - 3.4
   - 3.5
   - 3.6
-  - 3.7-dev
+  - 3.7
+  - 3.8
+  - 3.9
 
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install -U pytest
 install:
-  - pip install cryptography
-
+  - pip install ".[test]" . # install package + test dependencies
 script:
-  - MYSQL_TEST_LOGIN_FILE=`pwd`/test.mylogin.cnf python myloginpath.py
+  - pytest

@@ -36,8 +36,9 @@ def parse(login_path: str, path=None) -> dict:
     )
     parser.read_string(read(path), source=path)
     data = dict(parser.items(login_path))
-    if 'port' in data:
-        data['port'] = int(data['port'])
+    data = {key: _strip_quotes(value) for key, value in data.items()}
+    if "port" in data:
+        data["port"] = int(data["port"])
     return data
 
 
@@ -92,7 +93,7 @@ def _read_encrypted_file(f) -> bytes:
         length_buffer = f.read(_CIPHER_STORE_LENGTH)
         if len(length_buffer) < _CIPHER_STORE_LENGTH:
             break
-        line_length, = struct.unpack("<i", length_buffer)
+        (line_length,) = struct.unpack("<i", length_buffer)
         line = _read_line(f, line_length, decryptor)
         plaintext += line
 
@@ -119,6 +120,17 @@ def _remove_pad(line):
         return None
 
     return line[:-pad_length]
+
+
+def _strip_quotes(value):
+    """If a value is quoted, remove the quotes at the beginning and end, then
+    un-escape any quote characters inside the string."""
+    if value.startswith('"') and value.endswith('"'):
+        # This is a quoted string. Remove the first and
+        # last quote, then unescape interior quotes.
+        value = value[1:-1]
+        value = value.replace('\\"', '"')
+    return value
 
 
 if __name__ == "__main__":
