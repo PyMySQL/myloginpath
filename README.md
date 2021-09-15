@@ -26,5 +26,5 @@ Use it from Python:
 import myloginpath, MySQLdb
 conf = myloginpath.parse('client')
 print(conf)  # {'host': 'localhost', 'user': 'localuser', 'password': 'secretstring'}
-conn = MySQLdb.connect(**conf, db="myapp")
+conn = MySQLdb.connect(**conf, database="myapp")
 ```
