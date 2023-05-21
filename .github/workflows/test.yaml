@@ -32,10 +32,7 @@ jobs:
         run: "pip install ."
 
       - name: Run tests
-        env:
-          TESTDB: actions.cnf
-        run: |
-          pytest --cov=myloginpath.py test
+        run: "pytest --cov=myloginpath.py test"
 
       - uses: codecov/codecov-action@v3
 
