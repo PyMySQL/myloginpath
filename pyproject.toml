@@ -4,7 +4,7 @@ version = "0.0.4rc1"
 description="MySQL login path file reader"
 
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.7"
 authors = [
     {name = "Inada Naoki", email = "songofacandy@gmail.com"}
 ]
@@ -17,6 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
