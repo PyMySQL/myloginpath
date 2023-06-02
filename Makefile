@@ -1,5 +1,5 @@
 format:
-	black myloginpath.py setup.py
+	black myloginpath.py
 
 clean:
 	rm -rf build/ dist/ myloginpath.egg-info/

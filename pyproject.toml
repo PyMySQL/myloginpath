@@ -1,6 +1,6 @@
 [project]
 name = "myloginpath"
-version = "0.0.4rc1"
+version = "0.0.4"
 description="MySQL login path file reader"
 
 readme = "README.md"
