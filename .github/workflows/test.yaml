@@ -23,6 +23,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
+          allow-prereleases: true
           python-version: ${{ matrix.python-version }}
           cache: "pip"
           cache-dependency-path: "requirements.txt"
