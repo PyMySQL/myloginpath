@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         run: "pytest --cov=myloginpath test"
 
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
 
       - name: Build distribution
         run: "python -m build ."
